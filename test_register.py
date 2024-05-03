@@ -11,6 +11,9 @@ LAST_NAME = "WU"
 PHONE_NUMBER = "912345678"
 EMAIL = "test1234@test.abc"
 PASSWORD = "Test1234!"
+TEST_LANGUAGE = "中文繁體"
+TEST_COUNTRY = "台灣"
+TEST_PHONE_REGION = "臺灣"
 
 
 class TestRegister:
@@ -74,11 +77,11 @@ class TestRegister:
 
     def test_normal_register(self):
         self.driver.get(ACY_URL)
-        self.set_language("中文繁體")
-        self.set_country("台灣")
+        self.set_language(TEST_LANGUAGE)
+        self.set_country(TEST_COUNTRY)
         self.set_first_name(FIRST_NAME)
         self.set_last_name(LAST_NAME)
-        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
         self.set_email(EMAIL)
         self.set_password(PASSWORD)
         # Check continue button.
@@ -89,11 +92,11 @@ class TestRegister:
 
     def test_illegal_first_name(self):
         self.driver.get(ACY_URL)
-        self.set_language("中文繁體")
-        self.set_country("台灣")
+        self.set_language(TEST_LANGUAGE)
+        self.set_country(TEST_COUNTRY)
         self.set_first_name("123")
         self.set_last_name(LAST_NAME)
-        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
         self.set_email(EMAIL)
         self.set_password(PASSWORD)
         # Check continue button.
@@ -109,11 +112,11 @@ class TestRegister:
 
     def test_illegal_last_name(self):
         self.driver.get(ACY_URL)
-        self.set_language("中文繁體")
-        self.set_country("台灣")
+        self.set_language(TEST_LANGUAGE)
+        self.set_country(TEST_COUNTRY)
         self.set_first_name(FIRST_NAME)
         self.set_last_name("456")
-        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
         self.set_email(EMAIL)
         self.set_password(PASSWORD)
         # Check continue button.
@@ -129,11 +132,11 @@ class TestRegister:
 
     def test_illegal_phone_number(self):
         self.driver.get(ACY_URL)
-        self.set_language("中文繁體")
-        self.set_country("台灣")
+        self.set_language(TEST_LANGUAGE)
+        self.set_country(TEST_COUNTRY)
         self.set_first_name(FIRST_NAME)
         self.set_last_name(LAST_NAME)
-        self.set_phone_number(region="臺灣", phone_number="test")
+        self.set_phone_number(region=TEST_PHONE_REGION, phone_number="test")
         self.set_email(EMAIL)
         self.set_password(PASSWORD)
         # Check continue button.
@@ -144,11 +147,11 @@ class TestRegister:
 
     def test_illegal_email(self):
         self.driver.get(ACY_URL)
-        self.set_language("中文繁體")
-        self.set_country("台灣")
+        self.set_language(TEST_LANGUAGE)
+        self.set_country(TEST_COUNTRY)
         self.set_first_name(FIRST_NAME)
         self.set_last_name(LAST_NAME)
-        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
         self.set_email("test@123")
         self.set_password(PASSWORD)
         # Check continue button.
@@ -182,11 +185,11 @@ class TestRegister:
     def test_illegal_password(self, info):
         hint_green_color = "rgba(153,227,174,1)"
         self.driver.get(ACY_URL)
-        self.set_language("中文繁體")
-        self.set_country("台灣")
+        self.set_language(TEST_LANGUAGE)
+        self.set_country(TEST_COUNTRY)
         self.set_first_name(FIRST_NAME)
         self.set_last_name(LAST_NAME)
-        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
         self.set_email(EMAIL)
         self.set_password(info["password"])
         # Check password hint.
@@ -223,11 +226,11 @@ class TestRegister:
 
     def test_not_select_register_agreement(self):
         self.driver.get(ACY_URL)
-        self.set_language("中文繁體")
-        self.set_country("台灣")
+        self.set_language(TEST_LANGUAGE)
+        self.set_country(TEST_COUNTRY)
         self.set_first_name(FIRST_NAME)
         self.set_last_name(LAST_NAME)
-        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
         self.set_email(EMAIL)
         self.set_password(PASSWORD)
         register_agreement_checkbox = self.driver.find_element(By.NAME, "policy")
@@ -242,11 +245,11 @@ class TestRegister:
     @pytest.mark.current_run
     def test_not_select_subscription_agreement(self):
         self.driver.get(ACY_URL)
-        self.set_language("中文繁體")
-        self.set_country("台灣")
+        self.set_language(TEST_LANGUAGE)
+        self.set_country(TEST_COUNTRY)
         self.set_first_name(FIRST_NAME)
         self.set_last_name(LAST_NAME)
-        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
         self.set_email(EMAIL)
         self.set_password(PASSWORD)
         subscription_agreement_checkbox = self.driver.find_element(By.NAME, "subscription")
@@ -260,11 +263,11 @@ class TestRegister:
 
     def test_not_select_subscription_agreement(self):
         self.driver.get(ACY_URL)
-        self.set_language("中文繁體")
-        self.set_country("台灣")
+        self.set_language(TEST_LANGUAGE)
+        self.set_country(TEST_COUNTRY)
         self.set_first_name(FIRST_NAME)
         self.set_last_name(LAST_NAME)
-        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
         self.set_email(EMAIL)
         self.set_password(PASSWORD)
         subscription_agreement_checkbox = self.driver.find_element(By.NAME, "subscription")
@@ -278,7 +281,7 @@ class TestRegister:
 
     def test_enter_not_exist_country(self):
         self.driver.get(ACY_URL)
-        self.set_language("中文繁體")
+        self.set_language(TEST_LANGUAGE)
         country_selector_elem = self.driver.find_element(By.XPATH, "//*[@id=\"react-select-2-input\"]")
         country_selector_elem.click()
         country_selector_elem.send_keys("aa")
