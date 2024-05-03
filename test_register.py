@@ -220,3 +220,21 @@ class TestRegister:
         is_btn_enable = continue_btn.is_enabled()
         assert not is_btn_enable, \
             "After entering the illegal password for the register, the continue button should not be clickable."
+
+    def test_not_select_register_agreement(self):
+        self.driver.get(ACY_URL)
+        self.set_language("中文繁體")
+        self.set_country("台灣")
+        self.set_first_name(FIRST_NAME)
+        self.set_last_name(LAST_NAME)
+        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_email(EMAIL)
+        self.set_password(PASSWORD)
+        register_agreement_checkbox = self.driver.find_element(By.NAME, "policy")
+        if register_agreement_checkbox.is_selected():
+            register_agreement_checkbox.click()
+        # Check continue button.
+        continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
+        is_btn_enable = continue_btn.is_enabled()
+        assert not is_btn_enable, \
+            "After cancel register agreement, the continue button should not be clickable."
