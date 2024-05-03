@@ -11,4 +11,5 @@
 9. Do Not select subscription agreement.
 10. Select other language.
 11. Enter fields not from top to bottom.
-12. Check phone region when change country.
+12. Check phone region when changing country.
+13. Change language after entering fields.
