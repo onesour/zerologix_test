@@ -74,49 +74,15 @@ class TestRegister:
 
     def test_normal_register(self):
         self.driver.get(ACY_URL)
-        # Select web language.
-        language_elem = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//*[@id=\"root\"]/main/div/div/div/div[2]/div/div/div/div")))
-        language_elem.click()
-        language_ul = language_elem.find_element(By.TAG_NAME, "ul")
-        language_lis = language_ul.find_elements(By.TAG_NAME, "li")
-        for li_elem in language_lis:
-            if li_elem.text == "中文繁體":
-                li_elem.click()
-                break
-        # Select country.
-        country_selector_elem = self.driver.find_element(By.XPATH, "//*[@id=\"react-select-2-input\"]")
-        country_selector_elem.click()
-        country_list_elem = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//*[@id=\"react-select-2-listbox\"]")))
-        sub_elems = self.driver.find_elements(By.XPATH, "//*[@id=\"react-select-2-listbox\"]/div/div")
-        for sub in sub_elems:
-            if sub.text == "台灣":
-                sub.click()
-                break
-        first_name_elem = self.driver.find_element(By.NAME, "firstName")
-        first_name_elem.send_keys(FIRST_NAME)
-        last_name_elem = self.driver.find_element(By.NAME, "lastName")
-        last_name_elem.send_keys(LAST_NAME)
-        # Select phone region.
-        phone_region_elem = self.driver.find_element(By.CLASS_NAME, "flag-dropdown")
-        phone_region_elem.click()
-        phone_region_selector = self.driver.find_element(By.CSS_SELECTOR, ".country-list.dropdown")
-        phone_region_li = phone_region_selector.find_elements(By.TAG_NAME, "li")
-        for li_elem in phone_region_li:
-            if "臺灣" in li_elem.text:
-                li_elem.click()
-                break
-        phone_elem = self.driver.find_element(By.XPATH,
-                                              "//*[@id=\"root\"]/main/div/div/div/div[2]/div/form/div/div/div[2]/div/div[3]/div/div[1]/div/input")
-        phone_elem.send_keys(PHONE_NUMBER)
-        email_elem = self.driver.find_element(By.NAME, "email")
-        email_elem.send_keys(EMAIL)
-        password_elem = self.driver.find_element(By.NAME, "password")
-        password_elem.send_keys(PASSWORD)
+        self.set_language("中文繁體")
+        self.set_country("台灣")
+        self.set_first_name(FIRST_NAME)
+        self.set_last_name(LAST_NAME)
+        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_email(EMAIL)
+        self.set_password(PASSWORD)
         # Check continue button.
-        continue_btn = self.driver.find_element(By.XPATH,
-                                                "//*[@id=\"root\"]/main/div/div/div/div[2]/div/form/div/div/div[2]/div/button")
+        continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
         assert is_btn_enable, \
             "After entering the correct information for the register, the continue button should be clickable."
@@ -131,15 +97,13 @@ class TestRegister:
         self.set_email(EMAIL)
         self.set_password(PASSWORD)
         # Check continue button.
-        continue_btn = self.driver.find_element(By.XPATH,
-                                                "//*[@aria-label='continue button']")
+        continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
         assert is_btn_enable, \
             "After entering the information for the register, the continue button should be clickable."
         continue_btn.click()
         # Check first name error message.
-        first_name_error_elem = self.driver.find_element(By.XPATH,
-                                                         "//*[@aria-label='Invalid Firstname']")
+        first_name_error_elem = self.driver.find_element(By.XPATH, "//*[@aria-label='Invalid Firstname']")
         assert first_name_error_elem.text == "請輸入有效的名字", \
             "There should be error message after entering illegal first name."
 
@@ -153,15 +117,13 @@ class TestRegister:
         self.set_email(EMAIL)
         self.set_password(PASSWORD)
         # Check continue button.
-        continue_btn = self.driver.find_element(By.XPATH,
-                                                "//*[@aria-label='continue button']")
+        continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
         assert is_btn_enable, \
             "After entering the information for the register, the continue button should be clickable."
         continue_btn.click()
         # Check first name error message.
-        first_name_error_elem = self.driver.find_element(By.XPATH,
-                                                         "//*[@aria-label='Invalid Lastname']")
+        first_name_error_elem = self.driver.find_element(By.XPATH, "//*[@aria-label='Invalid Lastname']")
         assert first_name_error_elem.text == "請輸入有效的姓氏", \
             "There should be error message after entering illegal last name."
 
@@ -175,8 +137,7 @@ class TestRegister:
         self.set_email(EMAIL)
         self.set_password(PASSWORD)
         # Check continue button.
-        continue_btn = self.driver.find_element(By.XPATH,
-                                                "//*[@aria-label='continue button']")
+        continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
         assert not is_btn_enable, \
             "After entering the illegal phone number for the register, the continue button should not be clickable."
@@ -191,8 +152,7 @@ class TestRegister:
         self.set_email("test@123")
         self.set_password(PASSWORD)
         # Check continue button.
-        continue_btn = self.driver.find_element(By.XPATH,
-                                                "//*[@aria-label='continue button']")
+        continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
         assert is_btn_enable, \
             "After entering the information for the register, the continue button should be clickable."
@@ -230,39 +190,33 @@ class TestRegister:
         self.set_email(EMAIL)
         self.set_password(info["password"])
         # Check password hint.
-        character_check_hint = self.driver.find_element(By.XPATH,
-                                                        "//*[@aria-label='Length Check']")
+        character_check_hint = self.driver.find_element(By.XPATH, "//*[@aria-label='Length Check']")
         character_check_bg_color = character_check_hint.value_of_css_property("background-color")
         character_check_bg_color = character_check_bg_color.replace(" ", "")
         assert (character_check_bg_color == hint_green_color) is info["char_check"], \
             f"Password hint for character length to green should be {info['char_check']}."
-        lower_check_hint = self.driver.find_element(By.XPATH,
-                                                    "//*[@aria-label='Lowercase Check']")
+        lower_check_hint = self.driver.find_element(By.XPATH, "//*[@aria-label='Lowercase Check']")
         lower_bg_color = lower_check_hint.value_of_css_property("background-color")
         lower_bg_color = lower_bg_color.replace(" ", "")
         assert (lower_bg_color == hint_green_color) is info["lower_check"], \
             f"Password hint for lower letter to green should be {info['lower_check']}."
-        upper_check_hint = self.driver.find_element(By.XPATH,
-                                                    "//*[@aria-label='Uppercase Check']")
+        upper_check_hint = self.driver.find_element(By.XPATH, "//*[@aria-label='Uppercase Check']")
         upper_check_bg_color = upper_check_hint.value_of_css_property("background-color")
         upper_check_bg_color = upper_check_bg_color.replace(" ", "")
         assert (upper_check_bg_color == hint_green_color) is info["upper_check"], \
             f"Password hint for upper letter to green should be {info['upper_check']}."
-        number_check_hint = self.driver.find_element(By.XPATH,
-                                                     "//*[@aria-label='Number Check']")
+        number_check_hint = self.driver.find_element(By.XPATH, "//*[@aria-label='Number Check']")
         number_check_bg_color = number_check_hint.value_of_css_property("background-color")
         number_check_bg_color = number_check_bg_color.replace(" ", "")
         assert (number_check_bg_color == hint_green_color) is info["number_check"], \
             f"Password hint for number check to green should be {info['number_check']}."
-        special_char_check_hint = self.driver.find_element(By.XPATH,
-                                                           "//*[@aria-label='Special Char Check']")
+        special_char_check_hint = self.driver.find_element(By.XPATH, "//*[@aria-label='Special Char Check']")
         special_char_check_bg_color = special_char_check_hint.value_of_css_property("background-color")
         special_char_check_bg_color = special_char_check_bg_color.replace(" ", "")
         assert (special_char_check_bg_color == hint_green_color) is info["special_char_check"], \
             f"Password hint for special character to green should be {info['special_char_check']}."
         # Check continue button.
-        continue_btn = self.driver.find_element(By.XPATH,
-                                                "//*[@aria-label='continue button']")
+        continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
         assert not is_btn_enable, \
             "After entering the illegal password for the register, the continue button should not be clickable."
