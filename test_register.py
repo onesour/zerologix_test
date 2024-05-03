@@ -34,6 +34,7 @@ class TestRegister:
             if li_elem.text == language:
                 li_elem.click()
                 break
+        return language_elem
 
     def set_country(self, country):
         country_selector_elem = self.driver.find_element(By.XPATH, "//*[@id=\"react-select-2-input\"]")
@@ -49,10 +50,12 @@ class TestRegister:
     def set_first_name(self, first_name):
         first_name_elem = self.driver.find_element(By.NAME, "firstName")
         first_name_elem.send_keys(first_name)
+        return first_name_elem
 
     def set_last_name(self, last_name):
         last_name_elem = self.driver.find_element(By.NAME, "lastName")
         last_name_elem.send_keys(last_name)
+        return last_name_elem
 
     def set_phone_number(self, region, phone_number):
         phone_region_elem = self.driver.find_element(By.CLASS_NAME, "flag-dropdown")
@@ -66,14 +69,17 @@ class TestRegister:
         phone_elem = self.driver.find_element(By.XPATH,
                                               "//*[@id=\"root\"]/main/div/div/div/div[2]/div/form/div/div/div[2]/div/div[3]/div/div[1]/div/input")
         phone_elem.send_keys(phone_number)
+        return phone_elem
 
     def set_email(self, email):
         email_elem = self.driver.find_element(By.NAME, "email")
         email_elem.send_keys(email)
+        return email_elem
 
     def set_password(self, password):
         password_elem = self.driver.find_element(By.NAME, "password")
         password_elem.send_keys(password)
+        return password_elem
 
     def test_normal_register(self):
         self.driver.get(ACY_URL)
@@ -333,3 +339,36 @@ class TestRegister:
         phone_region_title = phone_region_elem.get_attribute("title")
         assert test_data["phone_region"] in phone_region_title, \
             f"There should be \"{test_data['phone_region']}\" in phone region after changing country."
+
+    def test_changing_language_after_entering_field(self):
+        self.driver.get(ACY_URL)
+        self.set_language(TEST_LANGUAGE)
+        self.set_country(TEST_COUNTRY)
+        first_name_elem = self.set_first_name(FIRST_NAME)
+        last_name_elem = self.set_last_name(LAST_NAME)
+        phone_number_elem = self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
+        email_elem = self.set_email(EMAIL)
+        password_elem = self.set_password(PASSWORD)
+        assert first_name_elem.get_attribute("value") == FIRST_NAME, \
+            f"First name element value should be \"{FIRST_NAME}\"."
+        assert last_name_elem.get_attribute("value") == LAST_NAME, \
+            f"Last name element value should be \"{LAST_NAME}\"."
+        assert PHONE_NUMBER in phone_number_elem.get_attribute("value"), \
+            f"Phone number element value should be \"{PHONE_NUMBER}\"."
+        assert email_elem.get_attribute("value") == EMAIL, \
+            f"Email element value should be \"{EMAIL}\"."
+        assert password_elem.get_attribute("value") == PASSWORD, \
+            f"Password element value should be \"{PASSWORD}\"."
+        self.set_language("English")
+        first_name_elem = self.driver.find_element(By.NAME, "firstName")
+        assert not first_name_elem.get_attribute("value"), "After changing language, first name value should be empty."
+        last_name_elem = self.driver.find_element(By.NAME, "lastName")
+        assert not last_name_elem.get_attribute("value"), "After changing language, last name value should be empty."
+        phone_number_elem = self.driver.find_element(By.XPATH,
+                                                     "//*[@id=\"root\"]/main/div/div/div/div[2]/div/form/div/div/div[2]/div/div[3]/div/div[1]/div/input")
+        assert not phone_number_elem.get_attribute("value"), \
+            "After changing language, phone number value should be empty."
+        email_elem = self.driver.find_element(By.NAME, "email")
+        assert not email_elem.get_attribute("value"), "After changing language, email value should be empty."
+        password_elem = self.driver.find_element(By.NAME, "password")
+        assert not password_elem.get_attribute("value"), "After changing language, password value should be empty."
