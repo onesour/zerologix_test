@@ -11,3 +11,4 @@
 9. Do Not select register agreement.
 10. Do Not select subscription agreement.
 11. Select other language.
+12. Enter fields not from top to bottom.
