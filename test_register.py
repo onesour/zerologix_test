@@ -238,3 +238,53 @@ class TestRegister:
         is_btn_enable = continue_btn.is_enabled()
         assert not is_btn_enable, \
             "After cancel register agreement, the continue button should not be clickable."
+
+    @pytest.mark.current_run
+    def test_not_select_subscription_agreement(self):
+        self.driver.get(ACY_URL)
+        self.set_language("中文繁體")
+        self.set_country("台灣")
+        self.set_first_name(FIRST_NAME)
+        self.set_last_name(LAST_NAME)
+        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_email(EMAIL)
+        self.set_password(PASSWORD)
+        subscription_agreement_checkbox = self.driver.find_element(By.NAME, "subscription")
+        if subscription_agreement_checkbox.is_selected():
+            subscription_agreement_checkbox.click()
+        # Check continue button.
+        continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
+        is_btn_enable = continue_btn.is_enabled()
+        assert is_btn_enable, \
+            "After only cancel subscription agreement, the continue button should be clickable."
+
+    def test_not_select_subscription_agreement(self):
+        self.driver.get(ACY_URL)
+        self.set_language("中文繁體")
+        self.set_country("台灣")
+        self.set_first_name(FIRST_NAME)
+        self.set_last_name(LAST_NAME)
+        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_email(EMAIL)
+        self.set_password(PASSWORD)
+        subscription_agreement_checkbox = self.driver.find_element(By.NAME, "subscription")
+        if subscription_agreement_checkbox.is_selected():
+            subscription_agreement_checkbox.click()
+        # Check continue button.
+        continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
+        is_btn_enable = continue_btn.is_enabled()
+        assert is_btn_enable, \
+            "After only cancel subscription agreement, the continue button should be clickable."
+
+    def test_enter_not_exist_country(self):
+        self.driver.get(ACY_URL)
+        self.set_language("中文繁體")
+        country_selector_elem = self.driver.find_element(By.XPATH, "//*[@id=\"react-select-2-input\"]")
+        country_selector_elem.click()
+        country_selector_elem.send_keys("aa")
+        WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//*[@id=\"react-select-2-listbox\"]")))
+        sub_elems = self.driver.find_elements(By.XPATH, "//*[@id=\"react-select-2-listbox\"]/div/div")
+        assert len(sub_elems) == 1, \
+            "After entering hint that didn't match any country, the hint list length should be 1."
+        assert sub_elems[0].text.lower() == "no options", "The only hint for country list should be \"no options\"."
