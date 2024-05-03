@@ -135,7 +135,7 @@ class TestRegister:
                                                 "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
         assert is_btn_enable, \
-            "After entering the correct information for the register, the continue button should be clickable."
+            "After entering the information for the register, the continue button should be clickable."
         continue_btn.click()
         # Check first name error message.
         first_name_error_elem = self.driver.find_element(By.XPATH,
@@ -157,7 +157,7 @@ class TestRegister:
                                                 "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
         assert is_btn_enable, \
-            "After entering the correct information for the register, the continue button should be clickable."
+            "After entering the information for the register, the continue button should be clickable."
         continue_btn.click()
         # Check first name error message.
         first_name_error_elem = self.driver.find_element(By.XPATH,
@@ -180,3 +180,89 @@ class TestRegister:
         is_btn_enable = continue_btn.is_enabled()
         assert not is_btn_enable, \
             "After entering the illegal phone number for the register, the continue button should not be clickable."
+
+    def test_illegal_email(self):
+        self.driver.get(ACY_URL)
+        self.set_language("中文繁體")
+        self.set_country("台灣")
+        self.set_first_name(FIRST_NAME)
+        self.set_last_name(LAST_NAME)
+        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_email("test@123")
+        self.set_password(PASSWORD)
+        # Check continue button.
+        continue_btn = self.driver.find_element(By.XPATH,
+                                                "//*[@aria-label='continue button']")
+        is_btn_enable = continue_btn.is_enabled()
+        assert is_btn_enable, \
+            "After entering the information for the register, the continue button should be clickable."
+        continue_btn.click()
+        # Check first name error message.
+        first_name_error_elem = self.driver.find_element(By.XPATH,
+                                                         "//*[@aria-label='Invalid Email']")
+        assert first_name_error_elem.text == "電子郵件地址不正確", \
+            "There should be error message after entering illegal email."
+
+    @pytest.mark.parametrize("info",
+                             [{"password": "aabbccdd", "char_check": True, "lower_check": True, "upper_check": False,
+                               "number_check": False, "special_char_check": False},
+                              {"password": "AABBCCDD", "char_check": True, "lower_check": False, "upper_check": True,
+                               "number_check": False, "special_char_check": False},
+                              {"password": "aabbccddeeffgghhiijja", "char_check": False, "lower_check": True,
+                               "upper_check": False, "number_check": False, "special_char_check": False},
+                              {"password": "AABBCCDDEEFFGGHHIIJJA", "char_check": False, "lower_check": False,
+                               "upper_check": True, "number_check": False, "special_char_check": False},
+                              {"password": "123", "char_check": False, "lower_check": False, "upper_check": False,
+                               "number_check": True, "special_char_check": False},
+                              {"password": "12345678", "char_check": True, "lower_check": False, "upper_check": False,
+                               "number_check": True, "special_char_check": False},
+                              {"password": "12345678!", "char_check": True, "lower_check": False, "upper_check": False,
+                               "number_check": True, "special_char_check": True},
+                              ])
+    def test_illegal_password(self, info):
+        hint_green_color = "rgba(153,227,174,1)"
+        self.driver.get(ACY_URL)
+        self.set_language("中文繁體")
+        self.set_country("台灣")
+        self.set_first_name(FIRST_NAME)
+        self.set_last_name(LAST_NAME)
+        self.set_phone_number(region="臺灣", phone_number=PHONE_NUMBER)
+        self.set_email(EMAIL)
+        self.set_password(info["password"])
+        # Check password hint.
+        character_check_hint = self.driver.find_element(By.XPATH,
+                                                        "//*[@aria-label='Length Check']")
+        character_check_bg_color = character_check_hint.value_of_css_property("background-color")
+        character_check_bg_color = character_check_bg_color.replace(" ", "")
+        assert (character_check_bg_color == hint_green_color) is info["char_check"], \
+            f"Password hint for character length to green should be {info['char_check']}."
+        lower_check_hint = self.driver.find_element(By.XPATH,
+                                                    "//*[@aria-label='Lowercase Check']")
+        lower_bg_color = lower_check_hint.value_of_css_property("background-color")
+        lower_bg_color = lower_bg_color.replace(" ", "")
+        assert (lower_bg_color == hint_green_color) is info["lower_check"], \
+            f"Password hint for lower letter to green should be {info['lower_check']}."
+        upper_check_hint = self.driver.find_element(By.XPATH,
+                                                    "//*[@aria-label='Uppercase Check']")
+        upper_check_bg_color = upper_check_hint.value_of_css_property("background-color")
+        upper_check_bg_color = upper_check_bg_color.replace(" ", "")
+        assert (upper_check_bg_color == hint_green_color) is info["upper_check"], \
+            f"Password hint for upper letter to green should be {info['upper_check']}."
+        number_check_hint = self.driver.find_element(By.XPATH,
+                                                     "//*[@aria-label='Number Check']")
+        number_check_bg_color = number_check_hint.value_of_css_property("background-color")
+        number_check_bg_color = number_check_bg_color.replace(" ", "")
+        assert (number_check_bg_color == hint_green_color) is info["number_check"], \
+            f"Password hint for number check to green should be {info['number_check']}."
+        special_char_check_hint = self.driver.find_element(By.XPATH,
+                                                           "//*[@aria-label='Special Char Check']")
+        special_char_check_bg_color = special_char_check_hint.value_of_css_property("background-color")
+        special_char_check_bg_color = special_char_check_bg_color.replace(" ", "")
+        assert (special_char_check_bg_color == hint_green_color) is info["special_char_check"], \
+            f"Password hint for special character to green should be {info['special_char_check']}."
+        # Check continue button.
+        continue_btn = self.driver.find_element(By.XPATH,
+                                                "//*[@aria-label='continue button']")
+        is_btn_enable = continue_btn.is_enabled()
+        assert not is_btn_enable, \
+            "After entering the illegal password for the register, the continue button should not be clickable."
