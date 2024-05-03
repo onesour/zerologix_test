@@ -322,3 +322,14 @@ class TestRegister:
         is_btn_enable = continue_btn.is_enabled()
         assert is_btn_enable, \
             "After entering the correct information for the register, the continue button should be clickable."
+
+    @pytest.mark.parametrize("test_data", [{"country": "中國", "phone_region": "中國"},
+                                           {"country": "越南", "phone_region": "越南"}])
+    def test_check_phone_region_when_changing_country(self, test_data):
+        self.driver.get(ACY_URL)
+        self.set_language(TEST_LANGUAGE)
+        self.set_country(test_data["country"])
+        phone_region_elem = self.driver.find_element(By.CLASS_NAME, "selected-flag")
+        phone_region_title = phone_region_elem.get_attribute("title")
+        assert test_data["phone_region"] in phone_region_title, \
+            f"There should be \"{test_data['phone_region']}\" in phone region after changing country."
