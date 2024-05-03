@@ -164,3 +164,19 @@ class TestRegister:
                                                          "//*[@aria-label='Invalid Lastname']")
         assert first_name_error_elem.text == "請輸入有效的姓氏", \
             "There should be error message after entering illegal last name."
+
+    def test_illegal_phone_number(self):
+        self.driver.get(ACY_URL)
+        self.set_language("中文繁體")
+        self.set_country("台灣")
+        self.set_first_name(FIRST_NAME)
+        self.set_last_name(LAST_NAME)
+        self.set_phone_number(region="臺灣", phone_number="test")
+        self.set_email(EMAIL)
+        self.set_password(PASSWORD)
+        # Check continue button.
+        continue_btn = self.driver.find_element(By.XPATH,
+                                                "//*[@aria-label='continue button']")
+        is_btn_enable = continue_btn.is_enabled()
+        assert not is_btn_enable, \
+            "After entering the illegal phone number for the register, the continue button should not be clickable."
