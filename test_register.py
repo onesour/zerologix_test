@@ -307,3 +307,18 @@ class TestRegister:
         is_btn_enable = continue_btn.is_enabled()
         assert is_btn_enable, \
             "After entering the correct information for the register, the continue button should be clickable."
+
+    def test_enter_field_not_from_top_to_bottom(self):
+        self.driver.get(ACY_URL)
+        self.set_language(TEST_LANGUAGE)
+        self.set_country(TEST_COUNTRY)
+        self.set_password(PASSWORD)
+        self.set_email(EMAIL)
+        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
+        self.set_first_name(FIRST_NAME)
+        self.set_last_name(LAST_NAME)
+        # Check continue button.
+        continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
+        is_btn_enable = continue_btn.is_enabled()
+        assert is_btn_enable, \
+            "After entering the correct information for the register, the continue button should be clickable."
