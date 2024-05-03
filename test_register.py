@@ -242,7 +242,6 @@ class TestRegister:
         assert not is_btn_enable, \
             "After cancel register agreement, the continue button should not be clickable."
 
-    @pytest.mark.current_run
     def test_not_select_subscription_agreement(self):
         self.driver.get(ACY_URL)
         self.set_language(TEST_LANGUAGE)
@@ -291,3 +290,20 @@ class TestRegister:
         assert len(sub_elems) == 1, \
             "After entering hint that didn't match any country, the hint list length should be 1."
         assert sub_elems[0].text.lower() == "no options", "The only hint for country list should be \"no options\"."
+
+    @pytest.mark.parametrize("test_data", [{"language": "English", "country": "Taiwan", "phone_region": "Taiwan"},
+                                           {"language": "日本語", "country": "日本", "phone_region": "日本"}])
+    def test_selector_other_language(self, test_data):
+        self.driver.get(ACY_URL)
+        self.set_language(test_data["language"])
+        self.set_country(test_data["country"])
+        self.set_first_name(FIRST_NAME)
+        self.set_last_name(LAST_NAME)
+        self.set_phone_number(region=test_data["phone_region"], phone_number=PHONE_NUMBER)
+        self.set_email(EMAIL)
+        self.set_password(PASSWORD)
+        # Check continue button.
+        continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
+        is_btn_enable = continue_btn.is_enabled()
+        assert is_btn_enable, \
+            "After entering the correct information for the register, the continue button should be clickable."
