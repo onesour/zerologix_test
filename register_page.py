@@ -9,7 +9,7 @@ class RegisterPage:
 
     def set_language(self, language):
         language_elem = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//*[@id=\"root\"]/main/div/div/div/div[2]/div/div/div/div")))
+            EC.element_to_be_clickable((By.XPATH, "//*[@aria-label='Language']")))
         language_elem.click()
         language_ul = language_elem.find_element(By.TAG_NAME, "ul")
         language_lis = language_ul.find_elements(By.TAG_NAME, "li")
@@ -49,8 +49,7 @@ class RegisterPage:
             if region in li_elem.text:
                 li_elem.click()
                 break
-        phone_elem = self.driver.find_element(By.XPATH,
-                                              "//*[@id=\"root\"]/main/div/div/div/div[2]/div/form/div/div/div[2]/div/div[3]/div/div[1]/div/input")
+        phone_elem = self.driver.find_element(By.CSS_SELECTOR, ".form-control.phone-input")
         phone_elem.send_keys(phone_number)
         return phone_elem
 
