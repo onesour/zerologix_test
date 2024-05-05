@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
+from register_page import RegisterPage
+
 CHROME_DRIVER_PATH = "C:\\Users\\YIHSUAN\\Desktop\\chromedriver-win64_124\\chromedriver.exe"
 ACY_URL = "https://www.acy.com/en/open-live-account"
 FIRST_NAME = "YI HSUAN"
@@ -23,73 +25,17 @@ class TestRegister:
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_experimental_option("detach", True)
         self.driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
-
-    def set_language(self, language):
-        language_elem = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//*[@id=\"root\"]/main/div/div/div/div[2]/div/div/div/div")))
-        language_elem.click()
-        language_ul = language_elem.find_element(By.TAG_NAME, "ul")
-        language_lis = language_ul.find_elements(By.TAG_NAME, "li")
-        for li_elem in language_lis:
-            if li_elem.text == language:
-                li_elem.click()
-                break
-        return language_elem
-
-    def set_country(self, country):
-        country_selector_elem = self.driver.find_element(By.XPATH, "//*[@id=\"react-select-2-input\"]")
-        country_selector_elem.click()
-        WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//*[@id=\"react-select-2-listbox\"]")))
-        sub_elems = self.driver.find_elements(By.XPATH, "//*[@id=\"react-select-2-listbox\"]/div/div")
-        for sub in sub_elems:
-            if sub.text == country:
-                sub.click()
-                break
-
-    def set_first_name(self, first_name):
-        first_name_elem = self.driver.find_element(By.NAME, "firstName")
-        first_name_elem.send_keys(first_name)
-        return first_name_elem
-
-    def set_last_name(self, last_name):
-        last_name_elem = self.driver.find_element(By.NAME, "lastName")
-        last_name_elem.send_keys(last_name)
-        return last_name_elem
-
-    def set_phone_number(self, region, phone_number):
-        phone_region_elem = self.driver.find_element(By.CLASS_NAME, "flag-dropdown")
-        phone_region_elem.click()
-        phone_region_selector = self.driver.find_element(By.CSS_SELECTOR, ".country-list.dropdown")
-        phone_region_li = phone_region_selector.find_elements(By.TAG_NAME, "li")
-        for li_elem in phone_region_li:
-            if region in li_elem.text:
-                li_elem.click()
-                break
-        phone_elem = self.driver.find_element(By.XPATH,
-                                              "//*[@id=\"root\"]/main/div/div/div/div[2]/div/form/div/div/div[2]/div/div[3]/div/div[1]/div/input")
-        phone_elem.send_keys(phone_number)
-        return phone_elem
-
-    def set_email(self, email):
-        email_elem = self.driver.find_element(By.NAME, "email")
-        email_elem.send_keys(email)
-        return email_elem
-
-    def set_password(self, password):
-        password_elem = self.driver.find_element(By.NAME, "password")
-        password_elem.send_keys(password)
-        return password_elem
+        self.register_page = RegisterPage(self.driver)
 
     def test_normal_register(self):
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
-        self.set_country(TEST_COUNTRY)
-        self.set_first_name(FIRST_NAME)
-        self.set_last_name(LAST_NAME)
-        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
-        self.set_email(EMAIL)
-        self.set_password(PASSWORD)
+        self.register_page.set_language(TEST_LANGUAGE)
+        self.register_page.set_country(TEST_COUNTRY)
+        self.register_page.set_first_name(FIRST_NAME)
+        self.register_page.set_last_name(LAST_NAME)
+        self.register_page.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
+        self.register_page.set_email(EMAIL)
+        self.register_page.set_password(PASSWORD)
         # Check continue button.
         continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
@@ -98,13 +44,13 @@ class TestRegister:
 
     def test_illegal_first_name(self):
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
-        self.set_country(TEST_COUNTRY)
-        self.set_first_name("123")
-        self.set_last_name(LAST_NAME)
-        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
-        self.set_email(EMAIL)
-        self.set_password(PASSWORD)
+        self.register_page.set_language(TEST_LANGUAGE)
+        self.register_page.set_country(TEST_COUNTRY)
+        self.register_page.set_first_name("123")
+        self.register_page.set_last_name(LAST_NAME)
+        self.register_page.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
+        self.register_page.set_email(EMAIL)
+        self.register_page.set_password(PASSWORD)
         # Check continue button.
         continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
@@ -118,13 +64,13 @@ class TestRegister:
 
     def test_illegal_last_name(self):
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
-        self.set_country(TEST_COUNTRY)
-        self.set_first_name(FIRST_NAME)
-        self.set_last_name("456")
-        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
-        self.set_email(EMAIL)
-        self.set_password(PASSWORD)
+        self.register_page.set_language(TEST_LANGUAGE)
+        self.register_page.set_country(TEST_COUNTRY)
+        self.register_page.set_first_name(FIRST_NAME)
+        self.register_page.set_last_name("456")
+        self.register_page.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
+        self.register_page.set_email(EMAIL)
+        self.register_page.set_password(PASSWORD)
         # Check continue button.
         continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
@@ -138,13 +84,13 @@ class TestRegister:
 
     def test_illegal_phone_number(self):
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
-        self.set_country(TEST_COUNTRY)
-        self.set_first_name(FIRST_NAME)
-        self.set_last_name(LAST_NAME)
-        self.set_phone_number(region=TEST_PHONE_REGION, phone_number="test")
-        self.set_email(EMAIL)
-        self.set_password(PASSWORD)
+        self.register_page.set_language(TEST_LANGUAGE)
+        self.register_page.set_country(TEST_COUNTRY)
+        self.register_page.set_first_name(FIRST_NAME)
+        self.register_page.set_last_name(LAST_NAME)
+        self.register_page.set_phone_number(region=TEST_PHONE_REGION, phone_number="test")
+        self.register_page.set_email(EMAIL)
+        self.register_page.set_password(PASSWORD)
         # Check continue button.
         continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
@@ -153,13 +99,13 @@ class TestRegister:
 
     def test_illegal_email(self):
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
-        self.set_country(TEST_COUNTRY)
-        self.set_first_name(FIRST_NAME)
-        self.set_last_name(LAST_NAME)
-        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
-        self.set_email("test@123")
-        self.set_password(PASSWORD)
+        self.register_page.set_language(TEST_LANGUAGE)
+        self.register_page.set_country(TEST_COUNTRY)
+        self.register_page.set_first_name(FIRST_NAME)
+        self.register_page.set_last_name(LAST_NAME)
+        self.register_page.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
+        self.register_page.set_email("test@123")
+        self.register_page.set_password(PASSWORD)
         # Check continue button.
         continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
@@ -191,13 +137,13 @@ class TestRegister:
     def test_illegal_password(self, info):
         hint_green_color = "rgba(153,227,174,1)"
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
-        self.set_country(TEST_COUNTRY)
-        self.set_first_name(FIRST_NAME)
-        self.set_last_name(LAST_NAME)
-        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
-        self.set_email(EMAIL)
-        self.set_password(info["password"])
+        self.register_page.set_language(TEST_LANGUAGE)
+        self.register_page.set_country(TEST_COUNTRY)
+        self.register_page.set_first_name(FIRST_NAME)
+        self.register_page.set_last_name(LAST_NAME)
+        self.register_page.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
+        self.register_page.set_email(EMAIL)
+        self.register_page.set_password(info["password"])
         # Check password hint.
         character_check_hint = self.driver.find_element(By.XPATH, "//*[@aria-label='Length Check']")
         character_check_bg_color = character_check_hint.value_of_css_property("background-color")
@@ -232,13 +178,13 @@ class TestRegister:
 
     def test_not_select_register_agreement(self):
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
-        self.set_country(TEST_COUNTRY)
-        self.set_first_name(FIRST_NAME)
-        self.set_last_name(LAST_NAME)
-        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
-        self.set_email(EMAIL)
-        self.set_password(PASSWORD)
+        self.register_page.set_language(TEST_LANGUAGE)
+        self.register_page.set_country(TEST_COUNTRY)
+        self.register_page.set_first_name(FIRST_NAME)
+        self.register_page.set_last_name(LAST_NAME)
+        self.register_page.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
+        self.register_page.set_email(EMAIL)
+        self.register_page.set_password(PASSWORD)
         register_agreement_checkbox = self.driver.find_element(By.NAME, "policy")
         if register_agreement_checkbox.is_selected():
             register_agreement_checkbox.click()
@@ -250,13 +196,13 @@ class TestRegister:
 
     def test_not_select_subscription_agreement(self):
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
-        self.set_country(TEST_COUNTRY)
-        self.set_first_name(FIRST_NAME)
-        self.set_last_name(LAST_NAME)
-        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
-        self.set_email(EMAIL)
-        self.set_password(PASSWORD)
+        self.register_page.set_language(TEST_LANGUAGE)
+        self.register_page.set_country(TEST_COUNTRY)
+        self.register_page.set_first_name(FIRST_NAME)
+        self.register_page.set_last_name(LAST_NAME)
+        self.register_page.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
+        self.register_page.set_email(EMAIL)
+        self.register_page.set_password(PASSWORD)
         subscription_agreement_checkbox = self.driver.find_element(By.NAME, "subscription")
         if subscription_agreement_checkbox.is_selected():
             subscription_agreement_checkbox.click()
@@ -268,13 +214,13 @@ class TestRegister:
 
     def test_not_select_subscription_agreement(self):
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
-        self.set_country(TEST_COUNTRY)
-        self.set_first_name(FIRST_NAME)
-        self.set_last_name(LAST_NAME)
-        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
-        self.set_email(EMAIL)
-        self.set_password(PASSWORD)
+        self.register_page.set_language(TEST_LANGUAGE)
+        self.register_page.set_country(TEST_COUNTRY)
+        self.register_page.set_first_name(FIRST_NAME)
+        self.register_page.set_last_name(LAST_NAME)
+        self.register_page.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
+        self.register_page.set_email(EMAIL)
+        self.register_page.set_password(PASSWORD)
         subscription_agreement_checkbox = self.driver.find_element(By.NAME, "subscription")
         if subscription_agreement_checkbox.is_selected():
             subscription_agreement_checkbox.click()
@@ -286,7 +232,7 @@ class TestRegister:
 
     def test_enter_not_exist_country(self):
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
+        self.register_page.set_language(TEST_LANGUAGE)
         country_selector_elem = self.driver.find_element(By.XPATH, "//*[@id=\"react-select-2-input\"]")
         country_selector_elem.click()
         country_selector_elem.send_keys("aa")
@@ -301,13 +247,13 @@ class TestRegister:
                                            {"language": "日本語", "country": "日本", "phone_region": "日本"}])
     def test_selector_other_language(self, test_data):
         self.driver.get(ACY_URL)
-        self.set_language(test_data["language"])
-        self.set_country(test_data["country"])
-        self.set_first_name(FIRST_NAME)
-        self.set_last_name(LAST_NAME)
-        self.set_phone_number(region=test_data["phone_region"], phone_number=PHONE_NUMBER)
-        self.set_email(EMAIL)
-        self.set_password(PASSWORD)
+        self.register_page.set_language(test_data["language"])
+        self.register_page.set_country(test_data["country"])
+        self.register_page.set_first_name(FIRST_NAME)
+        self.register_page.set_last_name(LAST_NAME)
+        self.register_page.set_phone_number(region=test_data["phone_region"], phone_number=PHONE_NUMBER)
+        self.register_page.set_email(EMAIL)
+        self.register_page.set_password(PASSWORD)
         # Check continue button.
         continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
@@ -316,13 +262,13 @@ class TestRegister:
 
     def test_enter_field_not_from_top_to_bottom(self):
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
-        self.set_country(TEST_COUNTRY)
-        self.set_password(PASSWORD)
-        self.set_email(EMAIL)
-        self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
-        self.set_first_name(FIRST_NAME)
-        self.set_last_name(LAST_NAME)
+        self.register_page.set_language(TEST_LANGUAGE)
+        self.register_page.set_country(TEST_COUNTRY)
+        self.register_page.set_password(PASSWORD)
+        self.register_page.set_email(EMAIL)
+        self.register_page.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
+        self.register_page.set_first_name(FIRST_NAME)
+        self.register_page.set_last_name(LAST_NAME)
         # Check continue button.
         continue_btn = self.driver.find_element(By.XPATH, "//*[@aria-label='continue button']")
         is_btn_enable = continue_btn.is_enabled()
@@ -333,8 +279,8 @@ class TestRegister:
                                            {"country": "越南", "phone_region": "越南"}])
     def test_check_phone_region_when_changing_country(self, test_data):
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
-        self.set_country(test_data["country"])
+        self.register_page.set_language(TEST_LANGUAGE)
+        self.register_page.set_country(test_data["country"])
         phone_region_elem = self.driver.find_element(By.CLASS_NAME, "selected-flag")
         phone_region_title = phone_region_elem.get_attribute("title")
         assert test_data["phone_region"] in phone_region_title, \
@@ -342,13 +288,13 @@ class TestRegister:
 
     def test_changing_language_after_entering_field(self):
         self.driver.get(ACY_URL)
-        self.set_language(TEST_LANGUAGE)
-        self.set_country(TEST_COUNTRY)
-        first_name_elem = self.set_first_name(FIRST_NAME)
-        last_name_elem = self.set_last_name(LAST_NAME)
-        phone_number_elem = self.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
-        email_elem = self.set_email(EMAIL)
-        password_elem = self.set_password(PASSWORD)
+        self.register_page.set_language(TEST_LANGUAGE)
+        self.register_page.set_country(TEST_COUNTRY)
+        first_name_elem = self.register_page.set_first_name(FIRST_NAME)
+        last_name_elem = self.register_page.set_last_name(LAST_NAME)
+        phone_number_elem = self.register_page.set_phone_number(region=TEST_PHONE_REGION, phone_number=PHONE_NUMBER)
+        email_elem = self.register_page.set_email(EMAIL)
+        password_elem = self.register_page.set_password(PASSWORD)
         assert first_name_elem.get_attribute("value") == FIRST_NAME, \
             f"First name element value should be \"{FIRST_NAME}\"."
         assert last_name_elem.get_attribute("value") == LAST_NAME, \
@@ -359,7 +305,7 @@ class TestRegister:
             f"Email element value should be \"{EMAIL}\"."
         assert password_elem.get_attribute("value") == PASSWORD, \
             f"Password element value should be \"{PASSWORD}\"."
-        self.set_language("English")
+        self.register_page.set_language("English")
         first_name_elem = self.driver.find_element(By.NAME, "firstName")
         assert not first_name_elem.get_attribute("value"), "After changing language, first name value should be empty."
         last_name_elem = self.driver.find_element(By.NAME, "lastName")
