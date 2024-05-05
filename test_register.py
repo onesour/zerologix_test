@@ -1,3 +1,5 @@
+import re
+
 import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -306,13 +308,16 @@ class TestRegister:
         assert password_elem.get_attribute("value") == PASSWORD, \
             f"Password element value should be \"{PASSWORD}\"."
         self.register_page.set_language("English")
-        first_name_elem = self.driver.find_element(By.NAME, "firstName")
+        first_name_elem = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.NAME, "firstName")))
         assert not first_name_elem.get_attribute("value"), "After changing language, first name value should be empty."
         last_name_elem = self.driver.find_element(By.NAME, "lastName")
         assert not last_name_elem.get_attribute("value"), "After changing language, last name value should be empty."
-        phone_number_elem = self.driver.find_element(By.XPATH,
-                                                     "//*[@id=\"root\"]/main/div/div/div/div[2]/div/form/div/div/div[2]/div/div[3]/div/div[1]/div/input")
-        assert not phone_number_elem.get_attribute("value"), \
+        phone_region_elem = self.driver.find_element(By.CLASS_NAME, "selected-flag")
+        phone_region_number = re.search(r"\d+", phone_region_elem.get_attribute("title"))
+        phone_number_elem = self.driver.find_element(By.CSS_SELECTOR, ".form-control.phone-input")
+        phone_number_value = phone_number_elem.get_attribute("value")
+        phone_number_value = phone_number_value.replace(f"+{phone_region_number.group()}", "")
+        assert not phone_number_value, \
             "After changing language, phone number value should be empty."
         email_elem = self.driver.find_element(By.NAME, "email")
         assert not email_elem.get_attribute("value"), "After changing language, email value should be empty."
