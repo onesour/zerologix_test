@@ -1,4 +1,5 @@
 # Question 1 
+Question 1 cases are in **test_register.py**.
 ## Test Cases
 1. Normal information to register.
 2. Enter a not existing country.
@@ -13,3 +14,6 @@
 11. Enter fields not from top to bottom.
 12. Check phone region when changing country.
 13. Change language after entering fields.
+
+# Question 2
+Question 2 case is in **test_email_verification.py**.
